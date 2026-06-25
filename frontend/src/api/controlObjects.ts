@@ -70,4 +70,21 @@ export const controlObjectsApi = {
 
   autoLink: (id: string) =>
     apiClient.post(`/control-objects/${id}/auto-link`),
+
+  // Links
+  getLinks: (id: string) =>
+    apiClient.get(`/control-objects/${id}/links`),
+
+  getUnlinkedEpics: (id: string) =>
+    apiClient.get(`/control-objects/${id}/jira/epics/unlinked`),
+
+  getUnlinkedEstimateTasks: (id: string) =>
+    apiClient.get(`/control-objects/${id}/estimate-tasks/unlinked`),
+
+  // AI Analysis
+  getAiAnalysis: (id: string) =>
+    apiClient.get(`/control-objects/${id}/ai-analysis`),
+
+  generateAiAnalysis: (id: string) =>
+    apiClient.post(`/control-objects/${id}/ai-analysis`),
 }

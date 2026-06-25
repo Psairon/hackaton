@@ -45,6 +45,46 @@ export class LinksService {
     return { ok: true };
   }
 
+  /** Список всех связок ET ↔ Epic для объекта контроля. */
+  async links(controlObjectId: string) {
+    const ets = await this.estimateTasks.find({ where: { controlObjectId } });
+    const epics = await this.epics.find({ where: { controlObjectId } });
+
+    const epicsByEt = new Map<string, typeof epics>();
+    for (const e of epics) {
+      if (!e.estimateTaskId) continue;
+      const arr = epicsByEt.get(e.estimateTaskId) ?? [];
+      arr.push(e);
+      epicsByEt.set(e.estimateTaskId, arr);
+    }
+
+    return ets.map((et) => ({
+      estimateTask: { id: et.id, title: et.title, totalHours: et.totalHours },
+      linkedEpics: (epicsByEt.get(et.id) ?? []).map((e) => ({
+        id: e.id,
+        jiraKey: e.jiraKey,
+        title: e.title,
+        linkSource: e.linkSource,
+      })),
+    }));
+  }
+
+  /** Несвязанные Jira Epic. */
+  async unlinkedEpics(controlObjectId: string) {
+    return this.epics.find({ where: { controlObjectId, estimateTaskId: null as any } });
+  }
+
+  /** Несвязанные EstimateTask. */
+  async unlinkedEstimateTasks(controlObjectId: string) {
+    const ets = await this.estimateTasks.find({ where: { controlObjectId } });
+    const linkedIds = new Set(
+      (await this.epics.find({ where: { controlObjectId } }))
+        .map((e) => e.estimateTaskId)
+        .filter(Boolean),
+    );
+    return ets.filter((et) => !linkedIds.has(et.id));
+  }
+
   /** Авто-привязка по ключу эпика из baseline (FR-11). */
   async autoLink(controlObjectId: string) {
     const ets = await this.estimateTasks.find({ where: { controlObjectId } });
