@@ -52,18 +52,8 @@ async function generate() {
 
 function copySummary() {
   if (!analysis.value) return
-  const text = [
-    new Date(analysis.value.generatedAt).toLocaleString('ru'),
-    obj.value?.name ?? '',
-    '',
-    analysis.value.summary ?? '',
-    '',
-    'Вопросы команде:',
-    ...(analysis.value.questions ?? []).map((q: any, i: number) => `${i + 1}. ${q.text ?? q}`),
-    '',
-    'Рекомендации:',
-    ...(analysis.value.recommendations ?? []).map((r: any) => `• ${r.description ?? r}`),
-  ].join('\n')
+  // copyText уже подготовлен бэкендом — используем его напрямую
+  const text = analysis.value.copyText ?? analysis.value.state ?? ''
   navigator.clipboard.writeText(text)
   message.success('Сводка скопирована в буфер обмена')
 }
@@ -114,41 +104,27 @@ onMounted(load)
 
       <div v-else-if="analysis" style="overflow-y: auto; height: calc(100vh - 65px); padding: 20px 28px; display: flex; flex-direction: column; gap: 16px; max-width: 900px;">
 
-        <!-- Summary -->
+        <!-- State (общая сводка) -->
         <NCard size="small" title="Общая AI-сводка"
           style="background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.07);">
-          <div style="font-size: 14px; color: #cbd5e1; line-height: 1.7; white-space: pre-wrap;">{{ analysis.summary }}</div>
+          <div style="font-size: 14px; color: #cbd5e1; line-height: 1.7; white-space: pre-wrap;">{{ analysis.state }}</div>
         </NCard>
 
-        <!-- Deviations -->
-        <NCard v-if="analysis.deviations?.length" size="small" title="Ключевые отклонения"
+        <!-- Main Risks -->
+        <NCard v-if="analysis.mainRisks?.length" size="small" title="Основные риски"
           style="background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.07);">
           <div style="display: flex; flex-direction: column; gap: 8px;">
-            <div v-for="(d, i) in analysis.deviations" :key="i"
+            <div v-for="(r, i) in analysis.mainRisks" :key="i"
               style="padding: 12px 14px; border-radius: 8px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: flex-start; gap: 12px;">
-              <NTag :type="riskType(d.riskLevel)" size="small" :bordered="false" style="flex-shrink: 0; margin-top: 1px;">
-                {{ d.riskLevel?.toUpperCase() ?? '—' }}
+              <NTag :type="riskType(r.level)" size="small" :bordered="false" style="flex-shrink: 0; margin-top: 1px;">
+                {{ r.level?.toUpperCase() ?? '—' }}
               </NTag>
               <div>
-                <div style="font-size: 13px; color: #e2e8f0; font-weight: 500; margin-bottom: 2px;">{{ d.object }}</div>
-                <div style="font-size: 13px; color: #94a3b8;">{{ d.description }}</div>
-                <div v-if="d.value != null" style="font-size: 12px; color: #64748b; margin-top: 2px;">{{ d.value }}</div>
+                <div style="font-size: 13px; color: #e2e8f0; font-weight: 500; margin-bottom: 2px;">
+                  {{ r.title }} <span style="color: #475569; font-weight: 400; font-size: 12px;">· {{ r.ref }}</span>
+                </div>
+                <div style="font-size: 13px; color: #94a3b8;">{{ r.text }}</div>
               </div>
-            </div>
-          </div>
-        </NCard>
-
-        <!-- Risk Zones -->
-        <NCard v-if="analysis.riskZones?.length" size="small" title="Основные зоны риска"
-          style="background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.07);">
-          <div style="display: flex; flex-direction: column; gap: 8px;">
-            <div v-for="(z, i) in analysis.riskZones" :key="i"
-              style="padding: 12px 14px; border-radius: 8px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);">
-              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-                <NTag :type="riskType(z.severity)" size="small" :bordered="false">{{ z.severity?.toUpperCase() ?? '—' }}</NTag>
-                <span style="font-size: 13px; color: #e2e8f0; font-weight: 500;">{{ z.object }}</span>
-              </div>
-              <div style="font-size: 13px; color: #94a3b8;">{{ z.description }}</div>
             </div>
           </div>
         </NCard>
@@ -158,8 +134,8 @@ onMounted(load)
           style="background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.07);">
           <ol style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px;">
             <li v-for="(q, i) in analysis.questions" :key="i" style="font-size: 13px; color: #cbd5e1;">
-              <span>{{ q.text ?? q }}</span>
-              <span v-if="q.object" style="font-size: 12px; color: #64748b; margin-left: 6px;">({{ q.object }})</span>
+              {{ q.text }}
+              <span style="font-size: 12px; color: #475569; margin-left: 6px;">· {{ q.ref }}</span>
             </li>
           </ol>
         </NCard>
@@ -170,9 +146,11 @@ onMounted(load)
           <div style="display: flex; flex-direction: column; gap: 8px;">
             <div v-for="(r, i) in analysis.recommendations" :key="i"
               style="padding: 10px 14px; border-radius: 8px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);">
-              <div style="font-size: 13px; color: #e2e8f0; font-weight: 500; margin-bottom: 2px;">{{ r.description ?? r }}</div>
-              <div v-if="r.reason" style="font-size: 12px; color: #64748b;">Причина: {{ r.reason }}</div>
-              <div v-if="r.relatedObject" style="font-size: 12px; color: #64748b;">Объект: {{ r.relatedObject }}</div>
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                <span style="font-size: 11px; font-weight: 600; color: #4f7cff; text-transform: uppercase; letter-spacing: .05em;">{{ r.action }}</span>
+                <span style="font-size: 12px; color: #475569;">· {{ r.ref }}</span>
+              </div>
+              <div style="font-size: 13px; color: #cbd5e1;">{{ r.text }}</div>
             </div>
           </div>
         </NCard>
@@ -181,10 +159,10 @@ onMounted(load)
         <NCard v-if="analysis.explanations?.length" size="small" title="Обоснование выводов"
           style="background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.07);">
           <NCollapse>
-            <NCollapseItem v-for="(e, i) in analysis.explanations" :key="i" :title="e.conclusion ?? `Вывод ${i + 1}`" :name="i">
+            <NCollapseItem v-for="(e, i) in analysis.explanations" :key="i"
+              :title="e.ref ?? `Вывод ${i + 1}`" :name="i">
               <div style="font-size: 13px; color: #94a3b8; line-height: 1.6;">
-                <div style="margin-bottom: 4px;"><b style="color: #64748b;">Основание:</b> {{ e.basis }}</div>
-                <div v-if="e.metrics?.length"><b style="color: #64748b;">Показатели:</b> {{ e.metrics.join(', ') }}</div>
+                {{ e.basis }}
               </div>
             </NCollapseItem>
           </NCollapse>

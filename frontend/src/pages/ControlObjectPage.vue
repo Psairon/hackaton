@@ -444,21 +444,21 @@ const dqCount = computed(() => {
 
                 <!-- Analysis content -->
                 <div v-else-if="aiAnalysis">
-                  <!-- Summary -->
+                  <!-- State -->
                   <div style="font-size: 12px; color: #94a3b8; line-height: 1.6; margin-bottom: 14px; white-space: pre-wrap;">
-                    {{ aiAnalysis.summary }}
+                    {{ aiAnalysis.state }}
                   </div>
 
-                  <!-- Top deviations -->
-                  <div v-if="aiAnalysis.deviations?.length" style="margin-bottom: 14px;">
+                  <!-- Top risks -->
+                  <div v-if="aiAnalysis.mainRisks?.length" style="margin-bottom: 14px;">
                     <div style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px;">
-                      Ключевые отклонения
+                      Основные риски
                     </div>
-                    <div v-for="(d, i) in aiAnalysis.deviations.slice(0,3)" :key="i"
+                    <div v-for="(r, i) in aiAnalysis.mainRisks.slice(0,3)" :key="i"
                       style="display: flex; align-items: flex-start; gap: 8px; margin-bottom: 6px;">
                       <div style="width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-top: 4px;"
-                        :style="{ background: riskColor(d.riskLevel ?? 'yellow') }" />
-                      <span style="font-size: 12px; color: #cbd5e1;">{{ d.description }}</span>
+                        :style="{ background: riskColor(r.level ?? 'yellow') }" />
+                      <span style="font-size: 12px; color: #cbd5e1;">{{ r.text }}</span>
                     </div>
                   </div>
 
@@ -469,7 +469,7 @@ const dqCount = computed(() => {
                     </div>
                     <div v-for="(q, i) in aiAnalysis.questions.slice(0,3)" :key="i"
                       style="font-size: 12px; color: #94a3b8; margin-bottom: 4px;">
-                      {{ i + 1 }}. {{ q.text ?? q }}
+                      {{ i + 1 }}. {{ q.text }}
                     </div>
                   </div>
 
@@ -480,7 +480,7 @@ const dqCount = computed(() => {
                     </div>
                     <div v-for="(r, i) in aiAnalysis.recommendations.slice(0,3)" :key="i"
                       style="font-size: 12px; color: #94a3b8; margin-bottom: 4px;">
-                      · {{ r.description ?? r }}
+                      · {{ r.text }}
                     </div>
                   </div>
 
