@@ -376,7 +376,7 @@ onMounted(async () => {
         <NSpin :show="baselineLoading">
           <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 16px; flex-wrap: wrap;">
             <NUpload accept=".xlsx,.xls,.csv" :max="1" :show-file-list="false"
-              :custom-request="({ file }) => importBaseline({ file })">
+              :custom-request="({ file, onFinish }) => { importBaseline({ file }); onFinish() }">
               <NButton type="primary" :loading="baselineImporting" size="medium">
                 📂 {{ baseline ? 'Загрузить повторно' : 'Загрузить baseline' }}
               </NButton>
@@ -390,7 +390,7 @@ onMounted(async () => {
 
           <div v-if="!baseline && !baselineLoading">
             <NUpload accept=".xlsx,.xls,.csv" :max="1" :show-file-list="false"
-              :custom-request="({ file }) => importBaseline({ file })">
+              :custom-request="({ file, onFinish }) => { importBaseline({ file }); onFinish() }">
               <NUploadDragger style="border-radius: 10px; margin-bottom: 16px;">
                 <div style="padding: 32px; text-align: center;">
                   <div style="font-size: 32px; margin-bottom: 8px;">📋</div>
@@ -446,13 +446,13 @@ onMounted(async () => {
             <div style="font-weight: 600; color: #e2e8f0; margin-bottom: 12px;">Импорт Jira-выгрузки</div>
             <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 12px;">
               <NUpload accept=".xlsx,.xls,.csv" :max="1" :show-file-list="false"
-                :custom-request="({ file }) => { structureFile = file.file ?? null }">
+                :custom-request="({ file, onFinish }) => { structureFile = file.file ?? null; onFinish() }">
                 <NButton size="small" :type="structureFile ? 'success' : 'default'">
                   {{ structureFile ? '✓ ' + structureFile.name : '📂 Файл структуры' }}
                 </NButton>
               </NUpload>
               <NUpload accept=".xlsx,.xls,.csv" :max="1" :show-file-list="false"
-                :custom-request="({ file }) => { worklogFile = file.file ?? null }">
+                :custom-request="({ file, onFinish }) => { worklogFile = file.file ?? null; onFinish() }">
                 <NButton size="small" :type="worklogFile ? 'success' : 'default'">
                   {{ worklogFile ? '✓ ' + worklogFile.name : '📂 Файл трудозатрат' }}
                 </NButton>
@@ -501,7 +501,7 @@ onMounted(async () => {
         <NSpin :show="empLoading">
           <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 16px; flex-wrap: wrap;">
             <NUpload accept=".xlsx,.xls,.csv" :max="1" :show-file-list="false"
-              :custom-request="({ file }) => importEmployees({ file })">
+              :custom-request="({ file, onFinish }) => { importEmployees({ file }); onFinish() }">
               <NButton type="primary" :loading="empImporting" size="medium">
                 📂 Импорт ADUsers.xlsx
               </NButton>
@@ -515,7 +515,7 @@ onMounted(async () => {
 
           <div v-if="!employees.length && !empLoading">
             <NUpload accept=".xlsx,.xls,.csv" :max="1" :show-file-list="false"
-              :custom-request="({ file }) => importEmployees({ file })">
+              :custom-request="({ file, onFinish }) => { importEmployees({ file }); onFinish() }">
               <NUploadDragger style="border-radius: 10px; margin-bottom: 16px;">
                 <div style="padding: 32px; text-align: center;">
                   <div style="font-size: 32px; margin-bottom: 8px;">👥</div>

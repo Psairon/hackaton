@@ -230,7 +230,7 @@ onMounted(load)
             accept=".xlsx,.xls,.csv"
             :max="1"
             :show-file-list="false"
-            :custom-request="({ file }) => handleImport({ file })"
+            :custom-request="({ file, onFinish }) => { handleImport({ file }); onFinish() }"
           >
             <NButton type="primary" :loading="importing" size="medium">
               📂 Импорт ADUsers.xlsx
@@ -246,7 +246,7 @@ onMounted(load)
         accept=".xlsx,.xls,.csv"
         :max="1"
         :show-file-list="false"
-        :custom-request="({ file }) => handleImport({ file })"
+        :custom-request="({ file, onFinish }) => { handleImport({ file }); onFinish() }"
       >
         <NUploadDragger style="border-radius: 10px;">
           <div style="padding: 40px; display: flex; flex-direction: column; align-items: center; gap: 10px;">
