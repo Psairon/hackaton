@@ -14,6 +14,8 @@ import { ControlObjectsModule } from './modules/control-objects/control-objects.
 import { BaselineModule } from './modules/baseline/baseline.module';
 import { EmployeesModule } from './modules/employees/employees.module';
 import { JiraModule } from './modules/jira/jira.module';
+import { LinksModule } from './modules/links/links.module';
+import { AnalyticsModule } from './modules/analytics/analytics.module';
 
 @Module({
   imports: [
@@ -31,6 +33,8 @@ import { JiraModule } from './modules/jira/jira.module';
     BaselineModule,
     EmployeesModule,
     JiraModule,
+    LinksModule,
+    AnalyticsModule,
   ],
 })
 export class AppModule {}
