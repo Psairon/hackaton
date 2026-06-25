@@ -38,12 +38,14 @@ onMounted(() => store.fetchOne(sprintId))
       <!-- Page header -->
       <div class="mb-5">
         <div class="flex items-center gap-2 mb-1">
-          <button
-            class="text-xs text-slate-500 hover:text-slate-300 transition-colors"
+          <NButton
+            text
+            size="tiny"
+            style="color: #64748b; font-size: 12px"
             @click="router.push(`/projects/${projectId}`)"
           >
             ← Назад
-          </button>
+          </NButton>
         </div>
         <div class="flex items-center gap-3">
           <h1 class="text-xl font-semibold text-slate-200">{{ store.current?.name ?? 'Спринт' }}</h1>
@@ -65,21 +67,15 @@ onMounted(() => store.fetchOne(sprintId))
       </div>
 
       <!-- Tabs -->
-      <div class="flex gap-1 mb-5 border-b border-edge">
+      <div class="sprint-tabs mb-5">
         <button
           v-for="t in tabs"
           :key="t.name"
-          class="px-3 py-2 text-xs font-medium transition-colors relative"
-          :class="activeTab === t.name
-            ? 'text-primary'
-            : 'text-slate-500 hover:text-slate-300'"
+          class="sprint-tab"
+          :class="{ 'sprint-tab--active': activeTab === t.name }"
           @click="router.push(`/projects/${projectId}/sprints/${sprintId}/${t.path}`)"
         >
           {{ t.label }}
-          <span
-            v-if="activeTab === t.name"
-            class="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-t"
-          />
         </button>
       </div>
 
@@ -88,3 +84,39 @@ onMounted(() => store.fetchOne(sprintId))
     </template>
   </AppLayout>
 </template>
+
+<style scoped>
+.sprint-tabs {
+  display: flex;
+  gap: 2px;
+  border-bottom: 1px solid #243049;
+}
+
+.sprint-tab {
+  /* сброс браузерных дефолтов */
+  appearance: none;
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  /* стиль */
+  padding: 7px 14px;
+  font-size: 12px;
+  font-weight: 400;
+  font-family: inherit;
+  color: #64748b;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.sprint-tab:hover {
+  color: #94a3b8;
+}
+
+.sprint-tab--active {
+  color: #4f7cff;
+  font-weight: 500;
+  border-bottom-color: #4f7cff;
+}
+</style>

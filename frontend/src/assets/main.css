@@ -1,40 +1,28 @@
-/* Tailwind v4 — без preflight чтобы не конфликтовать с Naive UI */
-@layer theme, base, components, utilities;
+@import "tailwindcss";
 
-@import "tailwindcss/theme.css" layer(theme);
-@import "tailwindcss/utilities.css" layer(utilities);
+/* Отключаем preflight чтобы не конфликтовать с Naive UI */
+@layer base {
+  /* переопределяем только необходимое */
+  *, *::before, *::after { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #0c111c;
+    color: #e6ebf5;
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { text-decoration: none; color: inherit; }
+}
 
-/* Кастомные цвета дизайн-системы */
+/* Кастомные токены дизайн-системы */
 @theme {
   --color-ink: #101622;
   --color-panel: #172033;
   --color-edge: #243049;
   --color-primary: #4f7cff;
-  --color-primary-hover: #6b91ff;
-  --color-primary-pressed: #3a63d6;
-
-  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
 
-/* Базовые глобальные стили (вместо preflight — только необходимое) */
-*, *::before, *::after {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  background: #0c111c;
-  color: #e6ebf5;
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-}
-
-a {
-  text-decoration: none;
-  color: inherit;
-}
-
-/* Drag & drop drop-active состояние */
+/* Drag & drop drop-active */
 .drop-active {
   outline: 2px dashed #4f7cff;
   outline-offset: -6px;
