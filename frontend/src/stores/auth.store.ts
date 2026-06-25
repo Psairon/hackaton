@@ -4,7 +4,7 @@ import { authApi } from '@/api/auth.api'
 import { mockUsers } from '@/api/mocks'
 import type { User } from '@/types'
 
-const USE_MOCK = true
+const USE_MOCK = false
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null)
