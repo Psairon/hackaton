@@ -1,0 +1,73 @@
+@baseUrl = http://localhost:3000/api/v1
+@token = PASTE_TOKEN_HERE
+
+### Register
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "admin@company.com",
+  "password": "password123",
+  "firstName": "Иван",
+  "lastName": "Иванов",
+  "role": "admin"
+}
+
+### Login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@company.com",
+  "password": "password123"
+}
+
+### Me
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{token}}
+
+### Users list
+GET {{baseUrl}}/users
+Authorization: Bearer {{token}}
+
+### Create project
+POST {{baseUrl}}/projects
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Проект Альфа",
+  "description": "Описание проекта"
+}
+
+### Get projects
+GET {{baseUrl}}/projects
+Authorization: Bearer {{token}}
+
+### Create sprint
+POST {{baseUrl}}/projects/PROJECT_ID/sprints
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Sprint 1",
+  "status": "planned",
+  "startDate": "2025-07-01",
+  "endDate": "2025-07-14"
+}
+
+### Get sprint tasks (tree)
+GET {{baseUrl}}/sprints/SPRINT_ID/tasks
+Authorization: Bearer {{token}}
+
+### Sprint task stats
+GET {{baseUrl}}/sprints/SPRINT_ID/stats/tasks
+Authorization: Bearer {{token}}
+
+### AI summary
+POST {{baseUrl}}/ai/sprint/SPRINT_ID/summary
+Authorization: Bearer {{token}}
+
+### AI risks
+POST {{baseUrl}}/ai/sprint/SPRINT_ID/risks
+Authorization: Bearer {{token}}

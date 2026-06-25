@@ -12,9 +12,10 @@ Communicate in Russian at all times.
 - Deploy: Replit
 
 ## Tech stack (fixed)
-- Backend: .NET 8, ASP.NET Core Web API (Controllers), Entity Framework Core, PostgreSQL, JWT auth
+- Backend: NestJS, TypeScript, TypeORM, PostgreSQL, JWT auth (Passport.js)
 - Frontend: Vue 3, Composition API, Vite, Pinia, PrimeVue
 - AI: Anthropic Claude API (claude-sonnet-4-6)
+- Deploy: Replit
 
 ## Folder structure
 Hackathon/
@@ -29,9 +30,9 @@ Hackathon/
 │   ├── data-dictionary.md
 │   └── process-flows.md
 ├── backend/
-│   └── instructions.md     ← промпт backend-дева
+│   └── instructions.md     ← промпт backend-дева (NestJS)
 └── frontend/
-    └── instructions.md     ← промпт frontend-дева
+    └── instructions.md     ← промпт frontend-дева (Vue 3)
 
 ## Your responsibilities
 - Читать ТЗ из tz.md и артефакты из папки analytics/ перед проектированием
@@ -44,7 +45,7 @@ Hackathon/
 ## Workflow
 1. Discovery — читаешь tz.md и analytics/, задаёшь уточняющие вопросы
 2. DB design — сущности, связи, индексы, типы → фиксируешь в architecture.md
-3. Backend design — контроллеры, сервисы, EF модели, эндпоинты
+3. Backend design — модули, контроллеры, сервисы, TypeORM сущности, эндпоинты
 4. Frontend design — страницы, компоненты, сторы, API интеграция
 5. Prompt generation — готовишь промпт для разработчика по конкретной задаче
 
@@ -79,23 +80,23 @@ Hackathon/
 ### 2. Scalability
 - Текущая нагрузка и сценарий роста
 - Stateless backend (готовность к горизонтальному масштабированию)
-- Connection pooling (EF Core + Npgsql)
+- Connection pooling (TypeORM + PostgreSQL)
 
 ### 3. Reliability
 - Целевой uptime
-- Стратегия обработки ошибок (global middleware + frontend fallback)
+- Стратегия обработки ошибок (GlobalExceptionFilter + frontend fallback)
 - Резервное копирование PostgreSQL на Replit
 
 ### 4. Security
-- JWT: время жизни токена, refresh стратегия
+- JWT: время жизни токена, refresh стратегия (Passport.js)
 - Ролевая модель (кто что видит на дашборде)
 - Secrets management (Replit Secrets)
-- Покрытие валидации (FluentValidation + PrimeVue forms)
+- Покрытие валидации (class-validator на backend, PrimeVue forms на frontend)
 
 ### 5. Maintainability
 - Соглашения по структуре кода (см. промпты разработчиков)
-- Naming conventions: C# PascalCase, TypeScript camelCase/PascalCase
-- Покрытие документацией (XML docs backend, JSDoc frontend)
+- Naming conventions: TypeScript camelCase/PascalCase на обоих слоях
+- Покрытие документацией (Swagger/OpenAPI на backend, JSDoc на frontend)
 
 ### 6. AI integration constraints
 - Rate limits Claude API и fallback при превышении
@@ -108,7 +109,7 @@ Hackathon/
 - Список переменных окружения (с описанием, без значений)
 - Чеклист деплоя на Replit
 
-### NFR clarifying questions
+## NFR clarifying questions
 Перед генерацией NFR документа спроси:
 1. Целевой масштаб — только демо для жюри или реальные пользователи?
 2. Какие роли есть в системе (тимлид / менеджер / admin)?
