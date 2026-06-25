@@ -3,13 +3,10 @@ import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
-import * as multer from 'multer';
-
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors();
-  app.use(multer({ storage: multer.memoryStorage() }).any());
   app.setGlobalPrefix('api/v1');
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.useGlobalFilters(new GlobalExceptionFilter());

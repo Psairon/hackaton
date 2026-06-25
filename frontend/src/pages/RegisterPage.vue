@@ -1,20 +1,28 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { NForm, NFormItem, NInput, NButton, NAlert, NGrid, NGridItem } from 'naive-ui'
+import { NForm, NFormItem, NInput, NButton, NAlert, NGrid, NGridItem, NSelect } from 'naive-ui'
 import { useAuthStore } from '@/stores/auth.store'
 
 const router = useRouter()
 const auth = useAuthStore()
 
-const form = ref({ email: '', password: '', firstName: '', lastName: '' })
+const form = ref({ email: '', password: '', firstName: '', lastName: '', role: 'manager' })
 const formRef = ref()
+
+const roleOptions = [
+  { label: 'Менеджер', value: 'manager' },
+  { label: 'Тимлид', value: 'teamlead' },
+  { label: 'PM', value: 'pm' },
+  { label: 'Администратор', value: 'admin' },
+]
 
 const rules = {
   firstName: [{ required: true, message: 'Введите имя', trigger: 'blur' }],
   lastName: [{ required: true, message: 'Введите фамилию', trigger: 'blur' }],
   email: [{ required: true, type: 'email' as const, message: 'Некорректный email', trigger: 'blur' }],
-  password: [{ required: true, min: 6, message: 'Минимум 6 символов', trigger: 'blur' }],
+  password: [{ required: true, min: 8, message: 'Минимум 8 символов', trigger: 'blur' }],
+  role: [{ required: true, message: 'Выберите роль', trigger: 'change' }],
 }
 
 async function handleSubmit() {
@@ -39,7 +47,7 @@ async function handleSubmit() {
       </div>
 
       <div class="rounded-xl border border-edge bg-panel/50 p-6">
-        <NAlert v-if="auth.error" type="error" :title="auth.error" class="mb-4" />
+        <NAlert v-if="auth.error" type="error" :title="String(auth.error)" class="mb-4" />
 
         <NForm ref="formRef" :model="form" :rules="rules" label-placement="top">
           <NGrid :cols="2" :x-gap="12">
@@ -59,7 +67,10 @@ async function handleSubmit() {
           </NFormItem>
           <NFormItem label="Пароль" path="password">
             <NInput v-model:value="form.password" type="password"
-                    show-password-on="click" placeholder="••••••••" />
+                    show-password-on="click" placeholder="Минимум 8 символов" />
+          </NFormItem>
+          <NFormItem label="Роль" path="role">
+            <NSelect v-model:value="form.role" :options="roleOptions" />
           </NFormItem>
           <NButton type="primary" block :loading="auth.loading" @click="handleSubmit">
             Создать аккаунт
