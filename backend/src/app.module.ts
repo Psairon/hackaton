@@ -13,6 +13,7 @@ import { AiModule } from './modules/ai/ai.module';
 import { ControlObjectsModule } from './modules/control-objects/control-objects.module';
 import { BaselineModule } from './modules/baseline/baseline.module';
 import { EmployeesModule } from './modules/employees/employees.module';
+import { JiraModule } from './modules/jira/jira.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { EmployeesModule } from './modules/employees/employees.module';
     ControlObjectsModule,
     BaselineModule,
     EmployeesModule,
+    JiraModule,
   ],
 })
 export class AppModule {}

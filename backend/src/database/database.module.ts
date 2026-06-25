@@ -13,6 +13,9 @@ import { Baseline } from '../modules/baseline/entities/baseline.entity';
 import { EstimateTask } from '../modules/baseline/entities/estimate-task.entity';
 import { EstimateTaskHours } from '../modules/baseline/entities/estimate-task-hours.entity';
 import { Employee } from '../modules/employees/entities/employee.entity';
+import { JiraEpic } from '../modules/jira/entities/jira-epic.entity';
+import { JiraTask } from '../modules/jira/entities/jira-task.entity';
+import { JiraWorklog } from '../modules/jira/entities/jira-worklog.entity';
 
 @Module({
   imports: [
@@ -35,6 +38,9 @@ import { Employee } from '../modules/employees/entities/employee.entity';
           EstimateTask,
           EstimateTaskHours,
           Employee,
+          JiraEpic,
+          JiraTask,
+          JiraWorklog,
         ],
         synchronize: true,
       }),
