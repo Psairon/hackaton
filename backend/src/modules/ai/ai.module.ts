@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
 import { AiService } from './ai.service';
+import { AiContextBuilder } from './ai.context-builder';
 import { AiController } from './ai.controller';
-import { StatsModule } from '../stats/stats.module';
+import { AnalyticsModule } from '../analytics/analytics.module';
 
 @Module({
-  imports: [StatsModule],
-  providers: [AiService],
+  imports: [AnalyticsModule],
+  providers: [AiService, AiContextBuilder],
   controllers: [AiController],
 })
 export class AiModule {}

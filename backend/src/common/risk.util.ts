@@ -26,7 +26,7 @@ export interface RiskResult {
   reasons: string[];
 }
 
-const YELLOW_THRESHOLD = 85; // % использования baseline
+const YELLOW_THRESHOLD = 80; // % использования baseline (раннее предупреждение для PM/TL)
 const NEAR_DUE_MS = 24 * 60 * 60 * 1000; // < 1 дня
 
 export function computeRisk(input: RiskInput): RiskResult {

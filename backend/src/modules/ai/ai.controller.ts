@@ -6,17 +6,13 @@ import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 @ApiTags('ai')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('ai')
+@Controller()
 export class AiController {
   constructor(private readonly aiService: AiService) {}
 
-  @Post('sprint/:id/summary')
+  /** AI-сводка объекта контроля: состояние, риски, вопросы, рекомендации, объяснения (FR-20–25). */
+  @Post('control-objects/:id/ai/summary')
   summary(@Param('id') id: string) {
-    return this.aiService.sprintSummary(id);
-  }
-
-  @Post('sprint/:id/risks')
-  risks(@Param('id') id: string) {
-    return this.aiService.sprintRisks(id);
+    return this.aiService.summary(id);
   }
 }
