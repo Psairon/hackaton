@@ -10,6 +10,8 @@ import { TasksModule } from './modules/tasks/tasks.module';
 import { EstimatesModule } from './modules/estimates/estimates.module';
 import { StatsModule } from './modules/stats/stats.module';
 import { AiModule } from './modules/ai/ai.module';
+import { ControlObjectsModule } from './modules/control-objects/control-objects.module';
+import { BaselineModule } from './modules/baseline/baseline.module';
 
 @Module({
   imports: [
@@ -23,6 +25,8 @@ import { AiModule } from './modules/ai/ai.module';
     EstimatesModule,
     StatsModule,
     AiModule,
+    ControlObjectsModule,
+    BaselineModule,
   ],
 })
 export class AppModule {}
