@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import Anthropic from '@anthropic-ai/sdk';
+import OpenAI from 'openai';
 import { StatsService } from '../stats/stats.service';
 
 @Injectable()
 export class AiService {
-  private readonly client: Anthropic;
+  private readonly client: OpenAI;
 
   constructor(
     private readonly statsService: StatsService,
     config: ConfigService,
   ) {
-    this.client = new Anthropic({ apiKey: config.get<string>('ANTHROPIC_API_KEY') });
+    this.client = new OpenAI({ apiKey: config.get<string>('OPENAI_API_KEY') });
   }
 
   async sprintSummary(sprintId: string): Promise<{ summary: string }> {
@@ -27,13 +27,13 @@ export class AiService {
 
 Напиши краткое саммари на русском языке: прогресс, узкие места, отделы с перегрузкой. Будь конкретен и лаконичен.`;
 
-    const message = await this.client.messages.create({
-      model: 'claude-sonnet-4-6',
+    const response = await this.client.chat.completions.create({
+      model: 'gpt-4o',
       max_tokens: 1024,
       messages: [{ role: 'user', content: prompt }],
     });
 
-    const summary = (message.content[0] as any).text as string;
+    const summary = response.choices[0].message.content ?? '';
     return { summary };
   }
 
@@ -52,13 +52,13 @@ export class AiService {
 
 Выяви риски спринта и дай конкретные рекомендации на русском языке. Перечисли топ-3 риска и действия по митигации.`;
 
-    const message = await this.client.messages.create({
-      model: 'claude-sonnet-4-6',
+    const response = await this.client.chat.completions.create({
+      model: 'gpt-4o',
       max_tokens: 1024,
       messages: [{ role: 'user', content: prompt }],
     });
 
-    const summary = (message.content[0] as any).text as string;
+    const summary = response.choices[0].message.content ?? '';
     return { summary };
   }
 }
