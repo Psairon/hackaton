@@ -81,10 +81,10 @@ export const controlObjectsApi = {
   getUnlinkedEstimateTasks: (id: string) =>
     apiClient.get(`/control-objects/${id}/estimate-tasks/unlinked`),
 
-  // AI Analysis
-  getAiAnalysis: (id: string) =>
-    apiClient.get(`/control-objects/${id}/ai-analysis`),
+  // AI Analysis (генерируется по запросу, не персистится)
+  // Заглушка для совместимости: AI не хранится на сервере — отдаём пустой результат.
+  getAiAnalysis: (_id: string) => Promise.resolve({ data: null }),
 
   generateAiAnalysis: (id: string) =>
-    apiClient.post(`/control-objects/${id}/ai-analysis`),
+    apiClient.post(`/control-objects/${id}/ai/summary`),
 }
